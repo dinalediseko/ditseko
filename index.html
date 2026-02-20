@@ -3,60 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Service · Certificate</title>
-    <!-- html2pdf library (converts HTML to PDF) -->
+    <title>Customer Service · Certificate Creator (PDF)</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    
     <style>
         * {
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            font-family: 'Montserrat', system-ui, sans-serif;
         }
         body {
-            background: linear-gradient(145deg, #e0e7ef 0%, #d2dbe8 100%);
+            background: #f0f2f5;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 20px;
+            margin: 0;
+            padding: 20px;
         }
         .card {
             max-width: 1000px;
             width: 100%;
-            background: rgba(255,255,255,0.75);
-            backdrop-filter: blur(4px);
-            border-radius: 48px;
-            box-shadow: 0 25px 50px -12px rgba(0, 30, 60, 0.4);
-            padding: 30px;
-            border: 1px solid rgba(255,245,210,0.7);
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            padding: 40px;
         }
         h1 {
-            font-weight: 600;
-            font-size: 2.2rem;
-            background: linear-gradient(135deg, #8B1E1E, #2C4A3B);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            font-size: 2rem;
+            color: #1e2b3a;
             margin-top: 0;
-            margin-bottom: 0.2rem;
+            margin-bottom: 0.5rem;
+            border-left: 8px solid #ea652b;
             padding-left: 20px;
         }
         .sub {
-            color: #1e3b4f;
+            color: #3f4e5f;
             margin-bottom: 2rem;
-            margin-top: 0.2rem;
-            font-weight: 400;
+            margin-top: 0.3rem;
+            font-style: italic;
             padding-left: 28px;
-            font-size: 1.1rem;
         }
         .form-row {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
             margin-bottom: 30px;
-            background: rgba(255,255,255,0.7);
+            background: #f8fafd;
             padding: 25px 20px;
-            border-radius: 40px;
-            backdrop-filter: blur(2px);
-            border: 1px solid #fff2d4;
+            border-radius: 24px;
         }
         .input-group {
             flex: 1 1 200px;
@@ -64,268 +62,272 @@
         }
         .input-group label {
             display: block;
-            font-weight: 700;
-            font-size: 0.8rem;
+            font-weight: 600;
+            font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: #2C3E50;
-            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            color: #2c3e50;
+            margin-bottom: 8px;
         }
         .input-group input {
             width: 100%;
-            padding: 12px 18px;
+            padding: 14px 18px;
             font-size: 1rem;
-            border: 2px solid #f0d9b5;
-            border-radius: 60px;
+            border: 2px solid #dde3ea;
+            border-radius: 12px;
             transition: 0.2s;
             background: white;
-            color: #1e2b3a;
         }
         .input-group input:focus {
-            border-color: #b22222;
+            border-color: #54b7c8;
             outline: none;
-            box-shadow: 0 0 0 4px rgba(178, 34, 34, 0.2);
+            box-shadow: 0 0 0 4px rgba(84, 183, 200, 0.15);
         }
         .preview-title {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
             margin: 25px 0 15px;
         }
         .preview-title h2 {
             margin: 0;
-            font-weight: 500;
-            color: #1e3b4f;
-            font-size: 1.8rem;
-        }
-        .badge {
-            background: #b22222;
-            color: #fdeacb;
-            padding: 6px 20px;
-            border-radius: 60px;
-            font-size: 1rem;
             font-weight: 600;
-            box-shadow: 0 2px 10px #b2222260;
+            color: #1e3b4f;
         }
-        .certificate-frame {
-            background: #fbf4e3;
-            border-radius: 48px;
-            padding: 25px;
-            box-shadow: inset 0 0 0 2px #ffeac2, 0 20px 35px -12px #00000030;
-            margin-bottom: 30px;
+        .badge-tag {
+            background: #ea652b;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        
+        /* Certificate Container to handle scaling smoothly on smaller screens */
+        .certificate-wrapper {
+            background: #eef1f6;
+            border-radius: 24px;
+            padding: 30px;
             display: flex;
             justify-content: center;
+            overflow-x: auto;
+            margin-bottom: 30px;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.05);
         }
-        #certificatePreview {
-            max-width: 700px;
-            width: 100%;
-            transition: all 0.1s ease;
+
+        /* Actual exact dimensions for the PDF */
+        #certificate-export-area {
+            width: 800px;
+            height: 565px;
+            min-width: 800px; 
+            min-height: 565px;
+            position: relative;
+            background-color: #30398a;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         }
+
         .action-buttons {
             display: flex;
             justify-content: flex-end;
             margin-top: 15px;
         }
         .btn-download {
-            background: linear-gradient(145deg, #1e3b4f, #0f2a3a);
+            background: #30398a;
             border: none;
             color: white;
-            font-size: 1.3rem;
-            font-weight: 500;
-            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 16px 36px;
             border-radius: 60px;
             display: inline-flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid #b99e6b;
-            box-shadow: 0 10px 20px -8px #04131f;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 20px rgba(48, 57, 138, 0.3);
         }
         .btn-download:hover {
-            background: linear-gradient(145deg, #14313f, #091e2b);
-            transform: scale(1.02);
+            background: #232a68;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(48, 57, 138, 0.4);
         }
         .btn-download:active {
-            transform: scale(0.98);
-        }
-        .footnote {
-            font-size: 0.8rem;
-            color: #435e74;
-            text-align: right;
-            margin-top: 15px;
-            border-top: 1px dashed #c9b386;
-            padding-top: 15px;
+            transform: translateY(1px);
         }
     </style>
 </head>
 <body>
     <div class="card">
-        <h1>CUSTOMER SERVICE · HONOURS</h1>
-        <div class="sub"></div>
+        <h1>Certificate Creator</h1>
+        <div class="sub">Customer Service</div>
 
-        <!-- INPUT FIELDS (defaults match requested example) -->
         <div class="form-row">
             <div class="input-group">
                 <label>First name</label>
-                <input type="text" id="inputName" placeholder="e.g. Didintle" value="Didintle">
+                <input type="text" id="inputName" placeholder="e.g. Didintle" value="">
             </div>
             <div class="input-group">
                 <label>Surname</label>
-                <input type="text" id="inputSurname" placeholder="e.g. Diseko" value="Diseko">
-            </div>
-            <div class="input-group">
-                <label>Identity number</label>
-                <input type="text" id="inputId" placeholder="e.g. 010615XXXXXXX" value="">
+                <input type="text" id="inputSurname" placeholder="e.g. Diseko" value="">
             </div>
         </div>
 
-        <!-- LIVE PREVIEW -->
         <div class="preview-title">
-            <h2>🎯 live preview</h2>
-            <span class="badge">“excellent performance”</span>
+            <h2>Live Preview</h2>
+            <span class="badge-tag">Course: Customer Service</span>
         </div>
-        <div class="certificate-frame">
-            <div id="certificatePreview">
-                <!-- injected dynamically -->
+        
+        <div class="certificate-wrapper">
+            <div id="certificate-export-area">
+                
+                <svg width="100%" height="100%" viewBox="0 0 800 565" style="position: absolute; top: 0; left: 0; z-index: 0;">
+                    <circle cx="480" cy="50" r="70" fill="#54b7c8" opacity="0.9"/> 
+                    <rect x="530" y="0" width="120" height="120" fill="#f4b324" />
+                    <circle cx="650" cy="60" r="60" fill="#ea652b" />
+                    <path d="M 680 0 L 800 0 L 800 120 L 680 120 Z" fill="#30398a" />
+                    <circle cx="740" cy="60" r="50" fill="#f4b324" />
+
+                    <path d="M 650 160 A 75 75 0 0 1 800 160 Z" fill="#54b7c8" /> 
+                    
+                    <rect x="650" y="220" width="150" height="100" fill="#f4b324" />
+                    <line x1="650" y1="240" x2="800" y2="240" stroke="#30398a" stroke-width="10" />
+                    <line x1="650" y1="260" x2="800" y2="260" stroke="#ea652b" stroke-width="10" />
+                    <line x1="650" y1="280" x2="800" y2="280" stroke="#30398a" stroke-width="10" />
+                    <line x1="650" y1="300" x2="800" y2="300" stroke="#ea652b" stroke-width="10" />
+
+                    <path d="M 650 380 A 75 75 0 0 0 800 380 Z" fill="#54b7c8" /> 
+                    
+                    <circle cx="725" cy="490" r="50" fill="#ea652b" />
+                    
+                    <path d="M 0 465 L 0 565 L 100 565 A 100 100 0 0 1 0 465 Z" fill="#f4b324" />
+                </svg>
+
+                <div style="position: absolute; top: 30px; right: 30px; z-index: 10; display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.95); padding: 8px 16px; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+                    <div style="width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #ea652b, #f4b324); display: flex; justify-content: center; align-items: center;">
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background: white;"></div>
+                    </div>
+                    <span style="font-weight: 800; color: #30398a; font-size: 13px; letter-spacing: 0.5px;">YOUR LOGO</span>
+                </div>
+
+                <div style="position: absolute; top: 0; left: 0; width: 650px; height: 100%; background: white; border-top-right-radius: 60px; border-bottom-right-radius: 60px; z-index: 1; padding: 65px 70px; box-sizing: border-box; box-shadow: 15px 0 35px rgba(0,0,0,0.15);">
+                    
+                    <h1 style="color: #30398a; font-size: 52px; font-weight: 900; margin: 0; text-transform: uppercase; letter-spacing: 1px; border: none; padding: 0;">CERTIFICATE</h1>
+                    <h2 style="color: #ea652b; font-size: 16px; font-weight: 700; margin: 8px 0 40px 0; text-transform: uppercase; letter-spacing: 5px;">Of Achievement</h2>
+
+                    <p style="color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px;">This certificate is proudly presented to</p>
+
+                    <div id="certName" style="color: #30398a; font-size: 38px; font-weight: 700; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 25px; width: 90%;">William Sebastion</div>
+
+                    <p style="color: #475569; font-size: 13px; font-weight: 500; line-height: 1.7; margin-bottom: 55px; width: 85%;">
+                        For their excellent performance in customer service. Their dedication, outstanding communication, and commitment to client satisfaction have consistently set a high standard for excellence and positively impacted our community.
+                    </p>
+
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 85%;">
+                        <div style="text-align: center; width: 130px;">
+                            <div style="font-family: 'Dancing Script', cursive; font-size: 28px; color: #1e293b; margin-bottom: 5px;">Morgan</div>
+                            <div style="border-top: 2px solid #cbd5e1; padding-top: 8px; font-size: 11px; font-weight: 700; color: #1e293b;">Morgan Maxwell</div>
+                            <div style="font-size: 10px; color: #64748b; font-weight: 500; margin-top: 3px;">CEO Founder</div>
+                        </div>
+                        <div style="text-align: center; width: 130px;">
+                             <div style="font-family: 'Dancing Script', cursive; font-size: 28px; color: #1e293b; margin-bottom: 5px;">Anderson</div>
+                            <div style="border-top: 2px solid #cbd5e1; padding-top: 8px; font-size: 11px; font-weight: 700; color: #1e293b;">Noah Anderson</div>
+                            <div style="font-size: 10px; color: #64748b; font-weight: 500; margin-top: 3px;">Head of Event</div>
+                        </div>
+                        <div style="text-align: center; width: 110px;">
+                            <div id="certDate" style="font-size: 12px; color: #1e293b; margin-bottom: 12px; font-weight: 700;">February 06, 2026</div>
+                            <div style="border-top: 2px solid #cbd5e1; padding-top: 8px; font-size: 10px; font-weight: 800; color: #1e293b; letter-spacing: 1px;">DATE</div>
+                        </div>
+                    </div>
+
+                    <div style="position: absolute; right: -50px; top: 48%; transform: translateY(-50%); z-index: 2;">
+                        <svg width="100" height="140" viewBox="0 0 100 140">
+                            <path d="M 20 70 L 20 130 L 50 110 L 80 130 L 80 70 Z" fill="#ea652b" />
+                            <circle cx="50" cy="50" r="45" fill="#30398a" />
+                            <circle cx="50" cy="50" r="50" fill="none" stroke="#30398a" stroke-width="3" stroke-dasharray="6 3" />
+                            <circle cx="50" cy="50" r="34" fill="white" />
+                            <text x="50" y="46" font-size="11" font-weight="900" fill="#30398a" text-anchor="middle">BEST</text>
+                            <text x="50" y="60" font-size="11" font-weight="900" fill="#30398a" text-anchor="middle">AWARD</text>
+                        </svg>
+                    </div>
+
+                </div>
             </div>
         </div>
 
-        <!-- DOWNLOAD BUTTON (now PDF) -->
         <div class="action-buttons">
-            <button class="btn-download" id="downloadBtn"> 📄 PDF</button>
-        </div>
-        <div class="footnote">
-            for DITSEKO
+            <button class="btn-download" id="downloadBtn">📥 Download PDF</button>
         </div>
     </div>
 
     <script>
         (function() {
-            // ---------- DOM elements ----------
+            // DOM elements
             const nameInput = document.getElementById('inputName');
             const surnameInput = document.getElementById('inputSurname');
-            const idInput = document.getElementById('inputId');
-            const previewDiv = document.getElementById('certificatePreview');
+            const certName = document.getElementById('certName');
+            const certDate = document.getElementById('certDate');
             const downloadBtn = document.getElementById('downloadBtn');
 
-            // ---------- helper: escape html ----------
-            function escapeHtml(unsafe) {
-                return unsafe.replace(/[&<>"']/g, function(m) {
-                    if(m === '&') return '&amp;';
-                    if(m === '<') return '&lt;';
-                    if(m === '>') return '&gt;';
-                    if(m === '"') return '&quot;';
-                    if(m === "'") return '&#039;';
-                    return m;
-                });
-            }
-
-            // ---------- format current date (e.g. 20 February 2026) ----------
+            // Set current formatted date
             function getFormattedDate() {
                 const now = new Date();
                 const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                return now.toLocaleDateString(undefined, options);
+                return now.toLocaleDateString('en-US', options);
             }
 
-            // ---------- generate certificate HTML ----------
-            function generateCertificateDiv(nameVal, surnameVal, idVal) {
-                const safeName = escapeHtml(nameVal.trim());
-                const safeSurname = escapeHtml(surnameVal.trim());
-                const safeId = escapeHtml(idVal.trim());
-
-                const fullName = (safeName || safeSurname) ? `${safeName} ${safeSurname}`.trim() : '____________________';
-                const idDisplay = safeId || '____________________';
-                const currentDate = getFormattedDate();
-                const collegeDate = 'est. 1987 · issued ' + currentDate;
-
-                return `
-                    <div style="background: repeating-linear-gradient(135deg, #b22222, #b22222 16px, #f7d97e 16px, #f7d97e 32px); padding: 20px; border-radius: 48px; box-shadow: 0 15px 30px -10px #3b2a1c;">
-                        <div style="background: white; border-radius: 36px; padding: 30px 25px; box-shadow: 0 8px 18px rgba(90, 40, 20, 0.2); border: 2px solid #faeacb;">
-                            <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 10px; flex-wrap: wrap;">
-                                <div style="width: 70px; height: 70px; background: linear-gradient(145deg, #1e4b5e, #092b3a); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffdfa7; font-size: 38px; border: 3px solid #b99e6b; box-shadow: 0 4px 8px #00000030;">🎓</div>
-                                <div style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #8B1E1E, #2C4A3B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px;">CUSTOMER SERVICE COLLEGE</div>
-                            </div>
-                            <div style="text-align: center; margin: 10px 0 20px; padding: 8px 0; border-top: 2px solid #f0cf91; border-bottom: 2px solid #f0cf91;">
-                                <span style="font-size: 22px; font-weight: 500; color: #b45f2b; font-style: italic; background: #fffae6; padding: 6px 30px; border-radius: 60px;">⭐ for their excellent performance in customer service ⭐</span>
-                            </div>
-                            <h1 style="font-size: 40px; margin: 5px 0 0; color: #2C4A3B; font-weight: 500; text-transform: uppercase; letter-spacing: 3px;">customer service</h1>
-                            <p style="font-size: 18px; color: #886e42; margin: 0 0 25px; font-style: italic;">professional course · with honours</p>
-                            <div style="font-size: 22px; margin: 25px 0 10px; color: #1f3b2c;">this certificate is awarded to</div>
-                            <div style="font-size: 48px; font-weight: 700; color: #b22222; margin: 0 0 15px; line-height: 1.2; border-bottom: 3px double #d4a76a; padding-bottom: 10px; display: inline-block; width: auto;">${fullName}</div>
-                            <div style="margin: 20px 0 25px; font-size: 20px;">
-                                <span style="background: #e9dbc4; padding: 8px 24px; border-radius: 60px; color: #2d3e36; font-weight: 500;">🆔 ${idDisplay}</span>
-                            </div>
-                            <div style="margin-top: 35px; border-top: 2px dashed #c5a56b; padding-top: 25px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
-                                <div style="text-align: left;">
-                                    <div style="font-weight: 600; color: #1e4b5e; font-size: 16px;">📅 college date</div>
-                                    <div style="font-size: 18px; font-weight: 500; color: #2d1f0c;">${collegeDate}</div>
-                                </div>
-                                <div style="text-align: right;">
-                                    <div style="font-weight: 600; color: #1e4b5e; font-size: 16px;">📜 director</div>
-                                    <div style="font-size: 22px; font-family: 'Brush Script MT', cursive; color: #8B1E1E;">E. Mitchell</div>
-                                </div>
-                            </div>
-                            <div style="margin-top: 20px; font-size: 13px; color: #b99e6b; display: flex; justify-content: center; gap: 8px; border-top: 1px solid #f0cf91; padding-top: 15px;">
-                                <span style="background: #fdf3df; padding: 4px 16px; border-radius: 40px;">✦ excellence ✦ integrity ✦ service ✦</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // ---------- live preview update ----------
+            // Update live preview text
             function updatePreview() {
-                previewDiv.innerHTML = generateCertificateDiv(
-                    nameInput.value,
-                    surnameInput.value,
-                    idInput.value
-                );
+                const name = nameInput.value.trim() || 'First Name';
+                const surname = surnameInput.value.trim() || 'Surname';
+                certName.innerText = `${name} ${surname}`;
             }
 
-            [nameInput, surnameInput, idInput].forEach(input => {
-                input.addEventListener('input', updatePreview);
-            });
-            updatePreview(); // initial render
+            // Initialize
+            certDate.innerText = getFormattedDate();
+            updatePreview();
 
-            // ---------- PDF download using html2pdf ----------
+            // Event listeners for live update
+            nameInput.addEventListener('input', updatePreview);
+            surnameInput.addEventListener('input', updatePreview);
+
+            // Export to PDF using html2pdf
             downloadBtn.addEventListener('click', function() {
-                const firstName = nameInput.value.trim() || 'participant';
-                const lastName = surnameInput.value.trim() || '';
-                // filename: firstName + lastName (no space) + .pdf
-                const fileName = firstName + lastName + '.pdf';
+                // Determine the correct naming convention
+                const name = nameInput.value.trim() || 'Name';
+                const surname = surnameInput.value.trim() || 'Surname';
+                // Removes spaces to create clean NameSurname.pdf
+                const fileName = `${name}${surname}.pdf`.replace(/\s+/g, '');
 
-                const element = previewDiv; // the certificate preview container
+                const element = document.getElementById('certificate-export-area');
 
-                // Optional: fine-tune PDF layout (page size, margins, etc.)
+                // Configuration for optimal PDF quality
                 const opt = {
-                    margin:        [0.5, 0.5, 0.5, 0.5], // top, right, bottom, left (in inches)
-                    filename:      fileName,
-                    image:         { type: 'jpeg', quality: 0.98 },
-                    html2canvas:   { scale: 2, letterRendering: true, useCORS: true },
-                    jsPDF:         { unit: 'in', format: 'a4', orientation: 'landscape' }
+                    margin:       0,
+                    filename:     fileName,
+                    image:        { type: 'jpeg', quality: 1 },
+                    html2canvas:  { scale: 3, useCORS: true, logging: false }, // Scale up for crisp vector/font rendering
+                    jsPDF:        { unit: 'px', format: [800, 565], orientation: 'landscape' }
                 };
 
-                // Use html2pdf library
-                if (typeof html2pdf === 'undefined') {
-                    alert('PDF library not loaded. Please refresh the page.');
-                    return;
-                }
-
-                // Show a quick loading state (optional)
-                downloadBtn.textContent = ' ⏳ generating PDF...';
+                // Add loading state to button
+                const originalText = downloadBtn.innerHTML;
+                downloadBtn.innerHTML = '⏳ Generating PDF...';
                 downloadBtn.disabled = true;
 
                 html2pdf().set(opt).from(element).save().then(() => {
-                    downloadBtn.textContent = ' 📄 PDF';
+                    // Revert button state
+                    downloadBtn.innerHTML = originalText;
                     downloadBtn.disabled = false;
                 }).catch(err => {
-                    alert('PDF generation error: ' + err.message);
-                    downloadBtn.textContent = ' 📄 PDF';
+                    console.error('PDF generation failed', err);
+                    alert('There was an error generating the PDF.');
+                    downloadBtn.innerHTML = originalText;
                     downloadBtn.disabled = false;
                 });
             });
         })();
     </script>
 </body>
-</html>
+                                </html>
