@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Service</title>
-    <!-- html-docx-js library for DOCX export -->
-    <script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.js"></script>
+    <title>Customer Service · Certificate</title>
+    <!-- html2pdf library (converts HTML to PDF) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -164,23 +164,23 @@
         <h1>CUSTOMER SERVICE · HONOURS</h1>
         <div class="sub"></div>
 
-        <!-- INPUT FIELDS -->
+        <!-- INPUT FIELDS (defaults match requested example) -->
         <div class="form-row">
             <div class="input-group">
                 <label>First name</label>
-                <input type="text" id="inputName" placeholder="e.g. Didintle" value="Isabella">
+                <input type="text" id="inputName" placeholder="e.g. Didintle" value="Didintle">
             </div>
             <div class="input-group">
                 <label>Surname</label>
-                <input type="text" id="inputSurname" placeholder="e.g. Diseko" value="Rossi">
+                <input type="text" id="inputSurname" placeholder="e.g. Diseko" value="Diseko">
             </div>
             <div class="input-group">
                 <label>Identity number</label>
-                <input type="text" id="inputId" placeholder="e.g. 010615XXXXXXX" value="CS-9420">
+                <input type="text" id="inputId" placeholder="e.g. 010615XXXXXXX" value="">
             </div>
         </div>
 
-        <!-- PREVIEW (uncommented to show live preview) -->
+        <!-- LIVE PREVIEW -->
         <div class="preview-title">
             <h2>🎯 live preview</h2>
             <span class="badge">“excellent performance”</span>
@@ -191,9 +191,9 @@
             </div>
         </div>
 
-        <!-- DOWNLOAD BUTTON -->
+        <!-- DOWNLOAD BUTTON (now PDF) -->
         <div class="action-buttons">
-            <button class="btn-download" id="downloadBtn"> DOCX</button>
+            <button class="btn-download" id="downloadBtn"> 📄 PDF</button>
         </div>
         <div class="footnote">
             for DITSEKO
@@ -228,51 +228,34 @@
                 return now.toLocaleDateString(undefined, options);
             }
 
-            // ---------- generate certificate with colourful pattern, logo, phrase & college date ----------
+            // ---------- generate certificate HTML ----------
             function generateCertificateDiv(nameVal, surnameVal, idVal) {
-                // escape inputs
                 const safeName = escapeHtml(nameVal.trim());
                 const safeSurname = escapeHtml(surnameVal.trim());
                 const safeId = escapeHtml(idVal.trim());
 
-                // build full name or placeholder
                 const fullName = (safeName || safeSurname) ? `${safeName} ${safeSurname}`.trim() : '____________________';
                 const idDisplay = safeId || '____________________';
                 const currentDate = getFormattedDate();
-
-                // college foundation year / date line
                 const collegeDate = 'est. 1987 · issued ' + currentDate;
 
-                // ----- colourful patterned border using diagonal stripes (red & gold) -----
                 return `
                     <div style="background: repeating-linear-gradient(135deg, #b22222, #b22222 16px, #f7d97e 16px, #f7d97e 32px); padding: 20px; border-radius: 48px; box-shadow: 0 15px 30px -10px #3b2a1c;">
-                        <!-- inner white card with smooth corners -->
                         <div style="background: white; border-radius: 36px; padding: 30px 25px; box-shadow: 0 8px 18px rgba(90, 40, 20, 0.2); border: 2px solid #faeacb;">
-
-                            <!-- LOGO PLACEHOLDER + COLLEGE NAME (colourful) -->
                             <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 10px; flex-wrap: wrap;">
                                 <div style="width: 70px; height: 70px; background: linear-gradient(145deg, #1e4b5e, #092b3a); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffdfa7; font-size: 38px; border: 3px solid #b99e6b; box-shadow: 0 4px 8px #00000030;">🎓</div>
                                 <div style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #8B1E1E, #2C4A3B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px;">CUSTOMER SERVICE COLLEGE</div>
                             </div>
-
-                            <!-- EXCELLENT PERFORMANCE PHRASE (prominent) -->
                             <div style="text-align: center; margin: 10px 0 20px; padding: 8px 0; border-top: 2px solid #f0cf91; border-bottom: 2px solid #f0cf91;">
                                 <span style="font-size: 22px; font-weight: 500; color: #b45f2b; font-style: italic; background: #fffae6; padding: 6px 30px; border-radius: 60px;">⭐ for their excellent performance in customer service ⭐</span>
                             </div>
-
-                            <!-- MAIN TITLE & NAME (classic) -->
                             <h1 style="font-size: 40px; margin: 5px 0 0; color: #2C4A3B; font-weight: 500; text-transform: uppercase; letter-spacing: 3px;">customer service</h1>
                             <p style="font-size: 18px; color: #886e42; margin: 0 0 25px; font-style: italic;">professional course · with honours</p>
-
                             <div style="font-size: 22px; margin: 25px 0 10px; color: #1f3b2c;">this certificate is awarded to</div>
                             <div style="font-size: 48px; font-weight: 700; color: #b22222; margin: 0 0 15px; line-height: 1.2; border-bottom: 3px double #d4a76a; padding-bottom: 10px; display: inline-block; width: auto;">${fullName}</div>
-
-                            <!-- IDENTITY NUMBER (stylish) -->
                             <div style="margin: 20px 0 25px; font-size: 20px;">
                                 <span style="background: #e9dbc4; padding: 8px 24px; border-radius: 60px; color: #2d3e36; font-weight: 500;">🆔 ${idDisplay}</span>
                             </div>
-
-                            <!-- COLLEGE DATE & SIGNATURE LINE (colourful) -->
                             <div style="margin-top: 35px; border-top: 2px dashed #c5a56b; padding-top: 25px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
                                 <div style="text-align: left;">
                                     <div style="font-weight: 600; color: #1e4b5e; font-size: 16px;">📅 college date</div>
@@ -283,8 +266,6 @@
                                     <div style="font-size: 22px; font-family: 'Brush Script MT', cursive; color: #8B1E1E;">E. Mitchell</div>
                                 </div>
                             </div>
-
-                            <!-- small pattern echo at bottom -->
                             <div style="margin-top: 20px; font-size: 13px; color: #b99e6b; display: flex; justify-content: center; gap: 8px; border-top: 1px solid #f0cf91; padding-top: 15px;">
                                 <span style="background: #fdf3df; padding: 4px 16px; border-radius: 40px;">✦ excellence ✦ integrity ✦ service ✦</span>
                             </div>
@@ -295,382 +276,56 @@
 
             // ---------- live preview update ----------
             function updatePreview() {
-                const name = nameInput.value;
-                const surname = surnameInput.value;
-                const id = idInput.value;
-                const certificateHTML = generateCertificateDiv(name, surname, id);
-                previewDiv.innerHTML = certificateHTML;
+                previewDiv.innerHTML = generateCertificateDiv(
+                    nameInput.value,
+                    surnameInput.value,
+                    idInput.value
+                );
             }
 
-            // input listeners
             [nameInput, surnameInput, idInput].forEach(input => {
                 input.addEventListener('input', updatePreview);
             });
+            updatePreview(); // initial render
 
-            // initial render
-            updatePreview();
-
-            // ---------- DOCX download (pattern & styles preserved) ----------
+            // ---------- PDF download using html2pdf ----------
             downloadBtn.addEventListener('click', function() {
-                const name = nameInput.value;
-                const surname = surnameInput.value;
-                const id = idInput.value;
+                const firstName = nameInput.value.trim() || 'participant';
+                const lastName = surnameInput.value.trim() || '';
+                // filename: firstName + lastName (no space) + .pdf
+                const fileName = firstName + lastName + '.pdf';
 
-                const divContent = generateCertificateDiv(name, surname, id);
+                const element = previewDiv; // the certificate preview container
 
-                // full HTML document with minimal extra styling
-                const fullDoc = `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Customer Service Certificate</title>
-    <style>body { margin: 0; background: #f2ede2; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }</style>
-</head>
-<body>
-    ${divContent}
-</body>
-</html>`;
+                // Optional: fine-tune PDF layout (page size, margins, etc.)
+                const opt = {
+                    margin:        [0.5, 0.5, 0.5, 0.5], // top, right, bottom, left (in inches)
+                    filename:      fileName,
+                    image:         { type: 'jpeg', quality: 0.98 },
+                    html2canvas:   { scale: 2, letterRendering: true, useCORS: true },
+                    jsPDF:         { unit: 'in', format: 'a4', orientation: 'landscape' }
+                };
 
-                try {
-                    if (typeof htmlDocx === 'undefined') {
-                        alert('DOCX library not ready — please refresh');
-                        return;
-                    }
-                    const convertedBlob = htmlDocx.asBlob(fullDoc);
-                    const url = window.URL.createObjectURL(convertedBlob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `Certificate_${name || 'participant'}_CustomerService.docx`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    window.URL.revokeObjectURL(url);
-                } catch (error) {
-                    alert('DOCX generation error: ' + error.message);
+                // Use html2pdf library
+                if (typeof html2pdf === 'undefined') {
+                    alert('PDF library not loaded. Please refresh the page.');
+                    return;
                 }
-            });
-        })();
-    </script>
-</body>
-</html>            -webkit-text-fill-color: transparent;
-            margin-top: 0;
-            margin-bottom: 0.2rem;
-            padding-left: 20px;
-        }
-        .sub {
-            color: #1e3b4f;
-            margin-bottom: 2rem;
-            margin-top: 0.2rem;
-            font-weight: 400;
-            padding-left: 28px;
-            font-size: 1.1rem;
-        }
-        .form-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 30px;
-            background: rgba(255,255,255,0.7);
-            padding: 25px 20px;
-            border-radius: 40px;
-            backdrop-filter: blur(2px);
-            border: 1px solid #fff2d4;
-        }
-        .input-group {
-            flex: 1 1 200px;
-            min-width: 180px;
-        }
-        .input-group label {
-            display: block;
-            font-weight: 700;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: #2C3E50;
-            margin-bottom: 6px;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 12px 18px;
-            font-size: 1rem;
-            border: 2px solid #f0d9b5;
-            border-radius: 60px;
-            transition: 0.2s;
-            background: white;
-            color: #1e2b3a;
-        }
-        .input-group input:focus {
-            border-color: #b22222;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(178, 34, 34, 0.2);
-        }
-        .preview-title {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin: 25px 0 15px;
-        }
-        .preview-title h2 {
-            margin: 0;
-            font-weight: 500;
-            color: #1e3b4f;
-            font-size: 1.8rem;
-        }
-        .badge {
-            background: #b22222;
-            color: #fdeacb;
-            padding: 6px 20px;
-            border-radius: 60px;
-            font-size: 1rem;
-            font-weight: 600;
-            box-shadow: 0 2px 10px #b2222260;
-        }
-        .certificate-frame {
-            background: #fbf4e3;
-            border-radius: 48px;
-            padding: 25px;
-            box-shadow: inset 0 0 0 2px #ffeac2, 0 20px 35px -12px #00000030;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: center;
-        }
-        #certificatePreview {
-            max-width: 700px;
-            width: 100%;
-            transition: all 0.1s ease;
-        }
-        .action-buttons {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 15px;
-        }
-        .btn-download {
-            background: linear-gradient(145deg, #1e3b4f, #0f2a3a);
-            border: none;
-            color: white;
-            font-size: 1.3rem;
-            font-weight: 500;
-            padding: 16px 40px;
-            border-radius: 60px;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid #b99e6b;
-            box-shadow: 0 10px 20px -8px #04131f;
-        }
-        .btn-download:hover {
-            background: linear-gradient(145deg, #14313f, #091e2b);
-            transform: scale(1.02);
-        }
-        .btn-download:active {
-            transform: scale(0.98);
-        }
-        .footnote {
-            font-size: 0.8rem;
-            color: #435e74;
-            text-align: right;
-            margin-top: 15px;
-            border-top: 1px dashed #c9b386;
-            padding-top: 15px;
-        }
-    </style>
-</head>
-<body>
-    <div class="card">
-        <h1>CUSTOMER SERVICE · HONOURS</h1>
-        <div class="sub"></div>
 
-        <!-- INPUT FIELDS -->
-        <div class="form-row">
-            <div class="input-group">
-                <label>First name</label>
-                <input type="text" id="inputName" placeholder="e.g. Didintle" value="Isabella">
-            </div>
-            <div class="input-group">
-                <label>Surname</label>
-                <input type="text" id="inputSurname" placeholder="e.g. Diseko" value="Rossi">
-            </div>
-            <div class="input-group">
-                <label>Identity number</label>
-                <input type="text" id="inputId" placeholder="e.g. 010615XXXXXXX" value="CS-9420">
-            </div>
-        </div>
+                // Show a quick loading state (optional)
+                downloadBtn.textContent = ' ⏳ generating PDF...';
+                downloadBtn.disabled = true;
 
-        <!-- PREVIEW
-        <div class="preview-title">
-            <h2>🎯 live preview</h2>
-            <span class="badge">“excellent performance”</span>
-        </div>
-        <div class="certificate-frame">
-            <div id="certificatePreview">
-                <!-- injected dynamically -->
-            </div>
-        </div>
-  -->
-
-        <!-- DOWNLOAD BUTTON -->
-        <div class="action-buttons">
-            <button class="btn-download" id="downloadBtn"> DOCX</button>
-        </div>
-        <div class="footnote">
-            for DITSEKO
-        </div>
-    </div>
-
-    <script>
-        (function() {
-            // ---------- DOM elements ----------
-            const nameInput = document.getElementById('inputName');
-            const surnameInput = document.getElementById('inputSurname');
-            const idInput = document.getElementById('inputId');
-            const previewDiv = document.getElementById('certificatePreview');
-            const downloadBtn = document.getElementById('downloadBtn');
-
-            // ---------- helper: escape html ----------
-            function escapeHtml(unsafe) {
-                return unsafe.replace(/[&<>"']/g, function(m) {
-                    if(m === '&') return '&amp;';
-                    if(m === '<') return '&lt;';
-                    if(m === '>') return '&gt;';
-                    if(m === '"') return '&quot;';
-                    if(m === "'") return '&#039;';
-                    return m;
+                html2pdf().set(opt).from(element).save().then(() => {
+                    downloadBtn.textContent = ' 📄 PDF';
+                    downloadBtn.disabled = false;
+                }).catch(err => {
+                    alert('PDF generation error: ' + err.message);
+                    downloadBtn.textContent = ' 📄 PDF';
+                    downloadBtn.disabled = false;
                 });
-            }
-
-            // ---------- format current date (e.g. 20 February 2026) ----------
-            function getFormattedDate() {
-                const now = new Date();
-                const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                return now.toLocaleDateString(undefined, options);
-            }
-
-            // ---------- generate certificate with colourful pattern, logo, phrase & college date ----------
-            function generateCertificateDiv(nameVal, surnameVal, idVal) {
-                // escape inputs
-                const safeName = escapeHtml(nameVal.trim());
-                const safeSurname = escapeHtml(surnameVal.trim());
-                const safeId = escapeHtml(idVal.trim());
-
-                // build full name or placeholder
-                const fullName = (safeName || safeSurname) ? `${safeName} ${safeSurname}`.trim() : '____________________';
-                const idDisplay = safeId || '____________________';
-                const currentDate = getFormattedDate();
-
-                // college foundation year / date line
-                const collegeDate = 'est. 1987 · issued ' + currentDate;
-
-                // ----- colourful patterned border using diagonal stripes (red & gold) -----
-                return `
-                    <div style="background: repeating-linear-gradient(135deg, #b22222, #b22222 16px, #f7d97e 16px, #f7d97e 32px); padding: 20px; border-radius: 48px; box-shadow: 0 15px 30px -10px #3b2a1c;">
-                        <!-- inner white card with smooth corners -->
-                        <div style="background: white; border-radius: 36px; padding: 30px 25px; box-shadow: 0 8px 18px rgba(90, 40, 20, 0.2); border: 2px solid #faeacb;">
-
-                            <!-- LOGO PLACEHOLDER + COLLEGE NAME (colourful) -->
-                            <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 10px; flex-wrap: wrap;">
-                                <div style="width: 70px; height: 70px; background: linear-gradient(145deg, #1e4b5e, #092b3a); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ffdfa7; font-size: 38px; border: 3px solid #b99e6b; box-shadow: 0 4px 8px #00000030;">🎓</div>
-                                <div style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #8B1E1E, #2C4A3B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px;">CUSTOMER SERVICE COLLEGE</div>
-                            </div>
-
-                            <!-- EXCELLENT PERFORMANCE PHRASE (prominent) -->
-                            <div style="text-align: center; margin: 10px 0 20px; padding: 8px 0; border-top: 2px solid #f0cf91; border-bottom: 2px solid #f0cf91;">
-                                <span style="font-size: 22px; font-weight: 500; color: #b45f2b; font-style: italic; background: #fffae6; padding: 6px 30px; border-radius: 60px;">⭐ for their excellent performance in customer service ⭐</span>
-                            </div>
-
-                            <!-- MAIN TITLE & NAME (classic) -->
-                            <h1 style="font-size: 40px; margin: 5px 0 0; color: #2C4A3B; font-weight: 500; text-transform: uppercase; letter-spacing: 3px;">customer service</h1>
-                            <p style="font-size: 18px; color: #886e42; margin: 0 0 25px; font-style: italic;">professional course · with honours</p>
-
-                            <div style="font-size: 22px; margin: 25px 0 10px; color: #1f3b2c;">this certificate is awarded to</div>
-                            <div style="font-size: 48px; font-weight: 700; color: #b22222; margin: 0 0 15px; line-height: 1.2; border-bottom: 3px double #d4a76a; padding-bottom: 10px; display: inline-block; width: auto;">${fullName}</div>
-
-                            <!-- IDENTITY NUMBER (stylish) -->
-                            <div style="margin: 20px 0 25px; font-size: 20px;">
-                                <span style="background: #e9dbc4; padding: 8px 24px; border-radius: 60px; color: #2d3e36; font-weight: 500;">🆔 ${idDisplay}</span>
-                            </div>
-
-                            <!-- COLLEGE DATE & SIGNATURE LINE (colourful) -->
-                            <div style="margin-top: 35px; border-top: 2px dashed #c5a56b; padding-top: 25px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
-                                <div style="text-align: left;">
-                                    <div style="font-weight: 600; color: #1e4b5e; font-size: 16px;">📅 college date</div>
-                                    <div style="font-size: 18px; font-weight: 500; color: #2d1f0c;">${collegeDate}</div>
-                                </div>
-                                <div style="text-align: right;">
-                                    <div style="font-weight: 600; color: #1e4b5e; font-size: 16px;">📜 director</div>
-                                    <div style="font-size: 22px; font-family: 'Brush Script MT', cursive; color: #8B1E1E;">E. Mitchell</div>
-                                </div>
-                            </div>
-
-                            <!-- small pattern echo at bottom -->
-                            <div style="margin-top: 20px; font-size: 13px; color: #b99e6b; display: flex; justify-content: center; gap: 8px; border-top: 1px solid #f0cf91; padding-top: 15px;">
-                                <span style="background: #fdf3df; padding: 4px 16px; border-radius: 40px;">✦ excellence ✦ integrity ✦ service ✦</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // ---------- live preview update ----------
-            function updatePreview() {
-                const name = nameInput.value;
-                const surname = surnameInput.value;
-                const id = idInput.value;
-                const certificateHTML = generateCertificateDiv(name, surname, id);
-                previewDiv.innerHTML = certificateHTML;
-            }
-
-            // input listeners
-            [nameInput, surnameInput, idInput].forEach(input => {
-                input.addEventListener('input', updatePreview);
-            });
-
-            // initial render
-            updatePreview();
-
-            // ---------- DOCX download (pattern & styles preserved) ----------
-            downloadBtn.addEventListener('click', function() {
-                const name = nameInput.value;
-                const surname = surnameInput.value;
-                const id = idInput.value;
-
-                const divContent = generateCertificateDiv(name, surname, id);
-
-                // full HTML document with minimal extra styling
-                const fullDoc = `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Customer Service Certificate</title>
-    <style>body { margin: 0; background: #f2ede2; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }</style>
-</head>
-<body>
-    ${divContent}
-</body>
-</html>`;
-
-                try {
-                    if (typeof htmlDocx === 'undefined') {
-                        alert('DOCX library not ready — please refresh');
-                        return;
-                    }
-                    const convertedBlob = htmlDocx.asBlob(fullDoc);
-                    const url = window.URL.createObjectURL(convertedBlob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `Certificate_${name || 'participant'}_CustomerService.docx`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    window.URL.revokeObjectURL(url);
-                } catch (error) {
-                    alert('DOCX generation error: ' + error.message);
-                }
             });
         })();
     </script>
 </body>
-  </html>
+</html>
