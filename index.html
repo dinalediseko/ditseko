@@ -12,76 +12,33 @@
         
         /* Input Panel */
         .controls { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-            margin-bottom: 30px; 
-            display: flex; 
-            flex-wrap: wrap;
-            gap: 20px; 
-            max-width: 850px;
-            width: 100%;
-            justify-content: center;
+            background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 20px; max-width: 900px; width: 100%; justify-content: center;
         }
-        .input-group { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 200px; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 180px; }
         label { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
-        input { padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; transition: 0.2s; }
-        input:focus { border-color: #30398a; box-shadow: 0 0 0 4px rgba(48, 57, 138, 0.1); }
+        input { padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; }
         
         button { 
-            background: #30398a; 
-            color: white; 
-            border: none; 
-            padding: 14px 30px; 
-            border-radius: 50px; 
-            cursor: pointer; 
-            font-weight: 700; 
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(48, 57, 138, 0.3);
+            background: #30398a; color: white; border: none; padding: 14px 30px; border-radius: 50px; 
+            cursor: pointer; font-weight: 700; transition: 0.3s; box-shadow: 0 4px 15px rgba(48, 57, 138, 0.3);
         }
         button:hover { background: #232a68; transform: translateY(-2px); }
 
         /* Certificate Preview Area */
-        #cert-wrapper {
-            background: #cbd5e1;
-            padding: 40px;
-            border-radius: 10px;
-            overflow-x: auto;
-            max-width: 100%;
-        }
-
-        #cert-container {
-            width: 800px;
-            height: 565px;
-            background: #30398a;
-            position: relative;
-            overflow: hidden;
-            color: #1e293b;
-        }
+        #cert-wrapper { background: #cbd5e1; padding: 40px; border-radius: 10px; overflow-x: auto; max-width: 100%; }
+        #cert-container { width: 800px; height: 565px; background: #30398a; position: relative; overflow: hidden; color: #1e293b; }
 
         .cert-body {
-            position: absolute;
-            left: 0; top: 0;
-            width: 660px;
-            height: 100%;
-            background: white;
-            border-top-right-radius: 80px;
-            border-bottom-right-radius: 80px;
-            padding: 60px;
-            box-sizing: border-box;
-            z-index: 2;
-            box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+            position: absolute; left: 0; top: 0; width: 660px; height: 100%; background: white;
+            border-top-right-radius: 80px; border-bottom-right-radius: 80px; padding: 60px;
+            box-sizing: border-box; z-index: 2; box-shadow: 10px 0 30px rgba(0,0,0,0.1);
         }
 
-        /* Geometric Accents */
-        .pattern-right {
-            position: absolute;
-            right: 0; top: 0; width: 140px; height: 100%;
-            z-index: 1;
-        }
+        .pattern-right { position: absolute; right: 0; top: 0; width: 140px; height: 100%; z-index: 1; }
 
-        .accent-circle { position: absolute; border-radius: 50%; }
+        /* Logo Styling */
+        #logo-preview { max-height: 80px; max-width: 150px; margin-bottom: 5px; object-fit: contain; display: block; }
     </style>
 </head>
 <body>
@@ -99,6 +56,10 @@
             <label>Identity Number</label>
             <input type="text" id="idNumber" value="010615XXXXXXX">
         </div>
+        <div class="input-group">
+            <label>Upload Logo (Screenshot)</label>
+            <input type="file" id="logoInput" accept="image/*">
+        </div>
         <div style="display: flex; align-items: flex-end;">
             <button onclick="downloadPDF()">Download PDF</button>
         </div>
@@ -114,9 +75,10 @@
             </div>
 
             <div class="cert-body">
-                <div style="position: absolute; top: 40px; right: 40px; text-align: right;">
+                <div style="position: absolute; top: 30px; right: 40px; display: flex; flex-direction: column; align-items: flex-end;">
+                    <img id="logo-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='50'%3E%3Crect width='100' height='50' fill='%23eee'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='10' text-anchor='middle' dy='.3em' fill='%23aaa'%3EUpload Logo%3C/text%3E%3C/svg%3E" alt="Company Logo">
                     <div style="font-weight: 900; color: #30398a; font-size: 11px; letter-spacing: 1px;">MARIA MOTSHILI (PTY)LTD</div>
-                    <div style="width: 50px; height: 3px; background: #ea652b; margin-top: 4px; display: inline-block;"></div>
+                    <div style="width: 100%; height: 3px; background: #ea652b; margin-top: 4px;"></div>
                 </div>
 
                 <h1 style="font-size: 52px; margin: 0; color: #30398a; font-weight: 900; letter-spacing: -1px;">CERTIFICATE</h1>
@@ -125,19 +87,21 @@
                 <p style="margin-top: 50px; font-size: 11px; color: #94a3b8; font-weight: 800; letter-spacing: 2px;">THIS CERTIFICATE IS PROUDLY PRESENTED TO</p>
                 
                 <div id="display-full-name" style="font-size: 38px; font-weight: 700; color: #30398a; border-bottom: 2px solid #f1f5f9; margin: 10px 0 25px 0; padding-bottom: 15px; width: 95%;">
-                    William Sebastion
+                    William Diseko
                 </div>
 
-                <p style="font-size: 14px; line-height: 1.8; color: #475569; width: 90%;">
+                <p style="font-size: 14px; line-height: 1.8; color: #475569; width: 90%; margin-bottom: 40px;">
                     for their excellent performance in Customer Service.
-                    <div style="margin-top: 60px; display: flex; gap: 80px;">
+                </p>
+
+                <div style="margin-top: 40px; display: flex; gap: 60px;">
                     <div style="text-align: left;">
-                        <div id="display-id" style="font-size: 16px; font-weight: 700; color: #1e293b; letter-spacing: 0.5px;"></div>
-                        <div style="border-top: 2px solid #30398a; width: 150px; margin-top: 8px; padding-top: 6px; font-size: 10px; font-weight: 800; color: #64748b; letter-spacing: 1px;">IDENTITY NUMBER</div>
+                        <div id="display-id" style="font-size: 16px; font-weight: 700; color: #1e293b; letter-spacing: 0.5px; min-height: 20px;">010615XXXXXXX</div>
+                        <div style="border-top: 2px solid #30398a; width: 180px; margin-top: 8px; padding-top: 6px; font-size: 10px; font-weight: 800; color: #64748b; letter-spacing: 1px;">IDENTITY NUMBER</div>
                     </div>
                     <div style="text-align: left;">
-                        <div id="display-date" style="font-size: 16px; font-weight: 700; color: #1e293b;">February 20, 2026</div>
-                        <div style="border-top: 2px solid #30398a; width: 150px; margin-top: 8px; padding-top: 6px; font-size: 10px; font-weight: 800; color: #64748b; letter-spacing: 1px;">DATE ISSUED</div>
+                        <div id="display-date" style="font-size: 16px; font-weight: 700; color: #1e293b; min-height: 20px;">February 20, 2026</div>
+                        <div style="border-top: 2px solid #30398a; width: 180px; margin-top: 8px; padding-top: 6px; font-size: 10px; font-weight: 800; color: #64748b; letter-spacing: 1px;">DATE ISSUED</div>
                     </div>
                 </div>
             </div>
@@ -148,14 +112,26 @@
         const fNameInput = document.getElementById('firstName');
         const sNameInput = document.getElementById('surname');
         const idInput = document.getElementById('idNumber');
+        const logoInput = document.getElementById('logoInput');
         
         const displayFullName = document.getElementById('display-full-name');
         const displayID = document.getElementById('display-id');
         const displayDate = document.getElementById('display-date');
+        const logoPreview = document.getElementById('logo-preview');
 
         // Automatic current date
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         displayDate.innerText = new Date().toLocaleDateString('en-US', options);
+
+        // Logo Upload Handler
+        logoInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => logoPreview.src = e.target.result;
+                reader.readAsDataURL(file);
+            }
+        });
 
         // Live Preview Logic
         const updatePreview = () => {
@@ -171,24 +147,19 @@
         async function downloadPDF() {
             const { jsPDF } = window.jspdf;
             const element = document.getElementById('cert-container');
-            
-            // Show loading state
             const btn = document.querySelector('button');
-            const originalText = btn.innerText;
+            
             btn.innerText = "Processing...";
             btn.disabled = true;
 
             try {
-                // Capture the div as a high-res image
                 const canvas = await html2canvas(element, {
-                    scale: 3, // Very high quality
+                    scale: 4, // Higher scale for crisp text and graphics
                     useCORS: true,
                     backgroundColor: null
                 });
 
                 const imgData = canvas.toDataURL('image/png');
-                
-                // Create PDF in landscape matching the div aspect ratio
                 const pdf = new jsPDF({
                     orientation: 'landscape',
                     unit: 'px',
@@ -197,15 +168,15 @@
 
                 pdf.addImage(imgData, 'PNG', 0, 0, 800, 565);
                 
-                // Naming convention: NameSurname.pdf
-                const fileName = `${fNameInput.value.trim()}${sNameInput.value.trim()}.pdf`.replace(/\s/g, '');
+                // Final Filename: NameSurname.pdf
+                const fileName = `${fNameInput.value.trim()}${sNameInput.value.trim()}.pdf`.replace(/\s+/g, '');
                 pdf.save(fileName);
 
             } catch (error) {
-                console.error("PDF generation error:", error);
-                alert("Failed to generate PDF. Check console.");
+                console.error("Error:", error);
+                alert("Generation failed.");
             } finally {
-                btn.innerText = originalText;
+                btn.innerText = "Download PDF";
                 btn.disabled = false;
             }
         }
