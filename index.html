@@ -3,101 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bulk Certificate Creator - Customer Service</title>
+    <title>Professional Certificate Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #f0f4f8; font-family: 'Montserrat', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
+        body { background: #f0f2f5; font-family: 'Montserrat', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
         
-        /* Input Panel */
         .controls { 
-            background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-            margin-bottom: 30px; display: flex; flex-direction: column; gap: 20px; max-width: 900px; width: 100%;
+            background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            margin-bottom: 30px; width: 100%; max-width: 1000px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
         }
-        .control-row { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; border-bottom: 1px solid #f1f5f9; padding-bottom: 20px; }
-        .control-row:last-child { border-bottom: none; padding-bottom: 0; }
-        .input-group { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 180px; }
-        label { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
-        input { padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; }
+        
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 0.7rem; font-weight: 900; color: #1e3a8a; text-transform: uppercase; }
+        input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
         
         button { 
-            background: #ea652b; color: white; border: none; padding: 14px 30px; border-radius: 10px; 
-            cursor: pointer; font-weight: 700; transition: 0.3s; box-shadow: 0 4px 15px rgba(234, 101, 43, 0.3);
+            padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: 700; color: white; transition: 0.3s;
         }
-        button:hover { background: #c24e1e; transform: translateY(-2px); }
-        .btn-blue { background: #30398a; box-shadow: 0 4px 15px rgba(48, 57, 138, 0.3); }
-        .btn-blue:hover { background: #232a68; }
+        .btn-preview { background: #64748b; }
+        .btn-bulk { background: #ea580c; grid-column: span 2; font-size: 1.1rem; }
+        button:hover { opacity: 0.8; }
 
-        /* Certificate Preview Area */
-        #cert-wrapper { background: #cbd5e1; padding: 40px; border-radius: 10px; overflow-x: auto; max-width: 100%; }
-        #cert-container { width: 800px; height: 565px; background: #30398a; position: relative; overflow: hidden; color: #1e293b; }
-
-        .cert-body {
-            position: absolute; left: 0; top: 0; width: 660px; height: 100%; background: white;
-            border-top-right-radius: 80px; border-bottom-right-radius: 80px; padding: 60px;
-            box-sizing: border-box; z-index: 2; box-shadow: 10px 0 30px rgba(0,0,0,0.15);
+        /* Certificate Container */
+        #cert-wrapper { background: #ddd; padding: 20px; border-radius: 8px; }
+        #cert-container { 
+            width: 1123px; height: 794px; background: white; position: relative; 
+            display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
+            border: 1px solid #eee; overflow: hidden;
         }
 
-        .pattern-right { position: absolute; right: 0; top: 0; width: 140px; height: 100%; z-index: 1; }
+        /* Top Bar Section */
+        .header { width: 100%; padding: 40px 60px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
+        #main-logo { height: 80px; width: auto; }
+        .company-info { text-align: right; border-bottom: 4px solid #ea580c; }
+        .company-name { font-weight: 900; font-size: 18px; color: #1e3a8a; letter-spacing: 1px; }
 
-        /* Flaps */
-        .flap {
-            position: absolute; top: 50%;
-            background: #ea652b; color: white;
-            padding: 6px 20px; font-size: 11px; font-weight: 900; letter-spacing: 2px;
-            text-transform: uppercase; white-space: nowrap; z-index: 10;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-        .left-flap { left: 0; transform: translate(-42%, -50%) rotate(-90deg); border-top-left-radius: 8px; border-top-right-radius: 8px; }
-        .right-flap { right: 0; transform: translate(42%, -50%) rotate(90deg); border-top-left-radius: 8px; border-top-right-radius: 8px; }
-
-        /* Logos & Graphics */
-        #logo-top-preview { max-height: 70px; max-width: 180px; margin-bottom: 5px; object-fit: contain; display: block; }
-        #logo-bottom-preview { max-height: 60px; max-width: 150px; object-fit: contain; }
-        .bottom-section { margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; width: 95%; }
+        /* Main Content */
+        .content { text-align: center; margin-top: 20px; }
+        h1 { font-size: 65px; font-weight: 900; color: #1e3a8a; margin: 0; letter-spacing: -2px; }
+        h2 { font-size: 20px; color: #ea580c; letter-spacing: 6px; margin: 5px 0 60px 0; font-weight: 700; text-transform: uppercase; }
         
-        #status { font-weight: bold; color: #ea652b; margin-top: 10px; width: 100%; text-align: center; }
+        .sub-text { font-size: 14px; color: #64748b; font-weight: 700; letter-spacing: 2px; }
+        .student-name { font-size: 42px; font-weight: 700; color: #1e3a8a; margin: 20px 0; border-bottom: 2px solid #e2e8f0; width: 800px; padding-bottom: 10px; }
+        .course-text { font-size: 16px; color: #475569; line-height: 1.6; max-width: 700px; margin-top: 20px; }
+        .course-name { font-weight: 900; color: #1e3a8a; display: block; margin-top: 5px; font-size: 20px; }
+
+        /* Bottom Section */
+        .footer { position: absolute; bottom: 40px; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        #cathsseta-logo { height: 60px; margin-top: 20px; }
+        
+        /* The Blue Star (Bottom Center) */
+        .star-seal { width: 100px; height: 100px; margin-bottom: 10px; }
+
+        /* Side Flaps */
+        .flap {
+            position: absolute; top: 50%; background: #1e3a8a; color: white;
+            padding: 8px 30px; font-size: 12px; font-weight: 700; letter-spacing: 2px;
+            text-transform: uppercase; white-space: nowrap; z-index: 10;
+        }
+        .left-flap { left: 0; transform: translate(-38%, -50%) rotate(-90deg); }
+        .right-flap { right: 0; transform: translate(38%, -50%) rotate(90deg); }
     </style>
 </head>
 <body>
 
     <div class="controls">
-        <div class="control-row">
-            <div class="input-group">
-                <label>1. Upload Top Logo (Maria Motshili)</label>
-                <input type="file" id="logoTopInput" accept="image/*">
-            </div>
-            <div class="input-group">
-                <label>2. Upload Bottom Logo (Cathsseta)</label>
-                <input type="file" id="logoBottomInput" accept="image/*">
-            </div>
+        <div class="input-group">
+            <label>Upload Maria Motshili Logo</label>
+            <input type="file" id="logoMain" accept="image/*" onchange="loadImg(event, 'main-logo')">
         </div>
-
-        <div class="control-row">
-            <div class="input-group">
-                <label>Single First Name</label>
-                <input type="text" id="firstName" value="William">
-            </div>
-            <div class="input-group">
-                <label>Single Surname</label>
-                <input type="text" id="surname" value="Diseko">
-            </div>
-            <div class="input-group">
-                <label>Single ID Number</label>
-                <input type="text" id="idNumber" value="010615XXXXXXX">
-            </div>
-            <button onclick="downloadSinglePDF()">Download 1 PDF</button>
+        <div class="input-group">
+            <label>Upload Cathsseta Logo</label>
+            <input type="file" id="logoSeta" accept="image/*" onchange="loadImg(event, 'cathsseta-logo')">
         </div>
-
-        <div class="control-row">
-            <div class="input-group">
-                <label>3. Bulk Upload (CSV format: Name, ID)</label>
-                <input type="file" id="csvInput" accept=".csv">
-            </div>
-            <button class="btn-blue" onclick="processBulkCSV()">Generate Bulk Multi-page PDF</button>
+        <div class="input-group">
+            <label>Student Name</label>
+            <input type="text" id="inName" value="LEEPILE DISEKO">
         </div>
-        <div id="status"></div>
+        <div class="input-group">
+            <label>ID Number</label>
+            <input type="text" id="inID" value="6504195821082">
+        </div>
+        <div class="input-group">
+            <label>Bulk CSV (Name, ID)</label>
+            <input type="file" id="csvFile" accept=".csv">
+        </div>
+        <button class="btn-preview" onclick="updatePreview()">Refresh Preview</button>
+        <button class="btn-bulk" onclick="generateBulk()">GENERATE 50+ CERTIFICATES (SINGLE PDF)</button>
     </div>
 
     <div id="cert-wrapper">
@@ -105,156 +99,72 @@
             <div class="flap left-flap">Attended - November 2025</div>
             <div class="flap right-flap">Issued - February 2026</div>
 
-            <div class="pattern-right">
-                <div style="position:absolute; top:40px; right:30px; width:50px; height:50px; background:#f4b324; border-radius:8px; transform: rotate(15deg);"></div>
-                <div style="position:absolute; top:110px; right:50px; width:30px; height:30px; background:#ea652b; border-radius:50%;"></div>
-                <div style="position:absolute; bottom:50px; right:20px; width:90px; height:90px; background:#54b7c8; border-radius:50%; opacity:0.7;"></div>
-                <div style="position:absolute; bottom:160px; right:40px; width:40px; height:40px; background:#f4b324; opacity:0.4; border-radius:50%;"></div>
+            <div class="header">
+                <img id="main-logo" src="" alt="Logo">
+                <div class="company-info">
+                    <div class="company-name">MARIA MOTSHILI (PTY)LTD</div>
+                </div>
             </div>
 
-            <div class="cert-body">
-                <div style="position: absolute; top: 30px; right: 40px; display: flex; flex-direction: column; align-items: flex-end;">
-                    <img id="logo-top-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='50'%3E%3Crect width='150' height='50' fill='%23eee'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='12' text-anchor='middle' dy='.3em' fill='%23aaa'%3EUpload Top Logo%3C/text%3E%3C/svg%3E" alt="Top Logo">
-                    <div style="width: 100%; height: 3px; background: #ea652b; margin-top: 4px;"></div>
-                </div>
-
-                <h1 style="font-size: 52px; margin: 0; color: #30398a; font-weight: 900; letter-spacing: -1px;">CERTIFICATE</h1>
-                <h2 style="font-size: 15px; letter-spacing: 5px; color: #ea652b; margin: 5px 0 0 0; text-transform: uppercase; font-weight: 700;">of achievement</h2>
-
-                <p style="margin-top: 45px; font-size: 11px; color: #94a3b8; font-weight: 800; letter-spacing: 2px;">THIS CERTIFICATE IS PROUDLY PRESENTED TO</p>
+            <div class="content">
+                <h1>CERTIFICATE</h1>
+                <h2>of achievement</h2>
                 
-                <div id="display-full-name" style="font-size: 35px; font-weight: 700; color: #30398a; border-bottom: 2px solid #f1f5f9; margin: 5px 0 20px 0; padding-bottom: 10px; width: 95%;">
-                    William Diseko
-                </div>
+                <p class="sub-text">THIS CERTIFICATE IS PROUDLY PRESENTED TO</p>
+                <div class="student-name" id="dispName">LEEPILE DISEKO</div>
+                <div class="sub-text" style="font-size: 18px;" id="dispID">ID 6504195821082</div>
 
-                <p style="font-size: 14px; line-height: 1.8; color: #475569; width: 90%; margin-bottom: 20px; text-transform: uppercase; font-weight: 600;">
-                    for their excellent performance in <br><span style="color: #ea652b; font-weight: 900; font-size: 16px;">Customer Service Module</span>
+                <p class="course-text">
+                    for his excellent performance in
+                    <span class="course-name">CUSTOMER SERVICE MODULE</span>
                 </p>
+            </div>
 
-                <div class="bottom-section">
-                    <div style="display: flex; gap: 30px;">
-                        <div style="text-align: left;">
-                            <div id="display-id" style="font-size: 14px; font-weight: 700; color: #1e293b; letter-spacing: 0.5px; min-height: 18px;">010615XXXXXXX</div>
-                            <div style="border-top: 2px solid #30398a; width: 140px; margin-top: 6px; padding-top: 4px; font-size: 9px; font-weight: 800; color: #64748b; letter-spacing: 1px;">IDENTITY NUMBER</div>
-                        </div>
-                    </div>
-
-                    <svg viewBox="0 0 24 24" style="width: 45px; height: 45px; fill: #f4b324; margin-bottom: 15px;">
-                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                    </svg>
-
-                    <div>
-                        <img id="logo-bottom-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='50'%3E%3Crect width='120' height='50' fill='%23eee'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='10' text-anchor='middle' dy='.3em' fill='%23aaa'%3EUpload Bottom Logo%3C/text%3E%3C/svg%3E" alt="Bottom Logo">
-                    </div>
-                </div>
+            <div class="footer">
+                <svg class="star-seal" viewBox="0 0 100 100">
+                    <polygon points="50,5 63,37 95,50 63,63 50,95 37,63 5,50 37,37" fill="#1e3a8a"/>
+                </svg>
+                <img id="cathsseta-logo" src="" alt="Seta Logo">
             </div>
         </div>
     </div>
 
     <script>
-        // DOM Elements
-        const fNameInput = document.getElementById('firstName');
-        const sNameInput = document.getElementById('surname');
-        const idInput = document.getElementById('idNumber');
-        const displayFullName = document.getElementById('display-full-name');
-        const displayID = document.getElementById('display-id');
-        const statusDiv = document.getElementById('status');
-        const logoTopInput = document.getElementById('logoTopInput');
-        const logoBottomInput = document.getElementById('logoBottomInput');
-        const logoTopPreview = document.getElementById('logo-top-preview');
-        const logoBottomPreview = document.getElementById('logo-bottom-preview');
-
-        // Logo Handlers
-        logoTopInput.addEventListener('change', function() {
-            if (this.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => logoTopPreview.src = e.target.result;
-                reader.readAsDataURL(this.files[0]);
-            }
-        });
-
-        logoBottomInput.addEventListener('change', function() {
-            if (this.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => logoBottomPreview.src = e.target.result;
-                reader.readAsDataURL(this.files[0]);
-            }
-        });
-
-        // Live Preview Update
-        const updatePreview = () => {
-            displayFullName.innerText = `${fNameInput.value.toUpperCase()} ${sNameInput.value.toUpperCase()}`;
-            displayID.innerText = idInput.value;
-        };
-
-        [fNameInput, sNameInput, idInput].forEach(input => {
-            input.addEventListener('input', updatePreview);
-        });
-
-        // Generate Single PDF
-        async function downloadSinglePDF() {
-            updatePreview();
-            const fileName = `${fNameInput.value}_${sNameInput.value}_Certificate.pdf`.replace(/\s+/g, '');
-            await generatePDF(fileName, false);
+        function loadImg(event, targetId) {
+            const reader = new FileReader();
+            reader.onload = () => document.getElementById(targetId).src = reader.result;
+            reader.readAsDataURL(event.target.files[0]);
         }
 
-        // Generate Bulk PDF
-        async function processBulkCSV() {
-            const fileInput = document.getElementById('csvInput');
-            if (!fileInput.files.length) {
-                alert("Please select a CSV file first!");
-                return;
-            }
+        function updatePreview() {
+            document.getElementById('dispName').innerText = document.getElementById('inName').value.toUpperCase();
+            document.getElementById('dispID').innerText = "ID " + document.getElementById('inID').value;
+        }
 
-            const file = fileInput.files[0];
+        async function generateBulk() {
+            const csv = document.getElementById('csvFile').files[0];
+            if (!csv) return alert("Please upload a CSV file first!");
+
             const reader = new FileReader();
-
-            reader.onload = async function(e) {
-                const rows = e.target.result.split('\n').map(row => row.trim()).filter(row => row.length > 0);
-                if (rows.length === 0) return alert("The CSV file is empty.");
-
-                statusDiv.innerText = `Processing ${rows.length} certificates. Please wait...`;
+            reader.onload = async (e) => {
+                const lines = e.target.result.split('\n').filter(l => l.trim());
                 const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [800, 565] });
+                const pdf = new jsPDF('l', 'px', [1123, 794]);
                 const element = document.getElementById('cert-container');
 
-                for (let i = 0; i < rows.length; i++) {
-                    const columns = rows[i].split(',');
-                    if(columns.length >= 2) {
-                        displayFullName.innerText = columns[0].trim().toUpperCase();
-                        displayID.innerText = columns[1].trim();
-                        
-                        await new Promise(resolve => setTimeout(resolve, 50)); // Render delay
-                        
-                        const canvas = await html2canvas(element, { scale: 3, useCORS: true, backgroundColor: null });
-                        const imgData = canvas.toDataURL('image/png');
-                        
-                        if (i > 0) pdf.addPage();
-                        pdf.addImage(imgData, 'PNG', 0, 0, 800, 565);
-                        statusDiv.innerText = `Processed ${i + 1} of ${rows.length}...`;
-                    }
+                for (let i = 0; i < lines.length; i++) {
+                    const [name, id] = lines[i].split(',');
+                    document.getElementById('dispName').innerText = name.trim().toUpperCase();
+                    document.getElementById('dispID').innerText = "ID " + id.trim();
+                    
+                    await new Promise(r => setTimeout(r, 100)); // Ensure render
+                    const canvas = await html2canvas(element, { scale: 2 });
+                    if (i > 0) pdf.addPage();
+                    pdf.addImage(canvas.toDataURL('image/jpeg', 0.8), 'JPEG', 0, 0, 1123, 794);
                 }
-                pdf.save('Bulk_Certificates.pdf');
-                statusDiv.innerText = "Done! Bulk PDF downloaded successfully.";
-                updatePreview(); // Reset
+                pdf.save('All_Certificates.pdf');
             };
-            reader.readAsText(file);
-        }
-
-        // Core PDF Generator
-        async function generatePDF(filename) {
-            const { jsPDF } = window.jspdf;
-            const element = document.getElementById('cert-container');
-            try {
-                const canvas = await html2canvas(element, { scale: 3, useCORS: true, backgroundColor: null });
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [800, 565] });
-                pdf.addImage(imgData, 'PNG', 0, 0, 800, 565);
-                pdf.save(filename);
-            } catch (error) {
-                console.error("Error:", error);
-                alert("Generation failed.");
-            }
+            reader.readAsText(csv);
         }
     </script>
 </body>
