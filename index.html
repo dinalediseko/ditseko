@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Certificate Generator</title>
+    <title>Maria Motshili Certificate Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
     <style>
         body { background: #f0f2f5; font-family: 'Montserrat', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
         
@@ -22,8 +22,8 @@
         button { 
             padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: 700; color: white; transition: 0.3s;
         }
-        .btn-preview { background: #64748b; }
-        .btn-bulk { background: #ea580c; grid-column: span 2; font-size: 1.1rem; }
+        .btn-preview { background: #1e3a8a; }
+        .btn-bulk { background: #000; grid-column: span 2; font-size: 1.1rem; }
         button:hover { opacity: 0.8; }
 
         /* Certificate Container */
@@ -31,40 +31,33 @@
         #cert-container { 
             width: 1123px; height: 794px; background: white; position: relative; 
             display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
-            border: 1px solid #eee; overflow: hidden;
+            border: 20px solid #1e3a8a; padding: 40px; overflow: hidden;
+        }
+        
+        /* Inner Border */
+        .inner-border {
+            border: 2px solid #1e3a8a; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; padding: 40px; box-sizing: border-box;
         }
 
-        /* Top Bar Section */
-        .header { width: 100%; padding: 40px 60px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
-        #main-logo { height: 80px; width: auto; }
-        .company-info { text-align: right; border-bottom: 4px solid #ea580c; }
-        .company-name { font-weight: 900; font-size: 18px; color: #1e3a8a; letter-spacing: 1px; }
-
-        /* Main Content */
-        .content { text-align: center; margin-top: 20px; }
-        h1 { font-size: 65px; font-weight: 900; color: #1e3a8a; margin: 0; letter-spacing: -2px; }
-        h2 { font-size: 20px; color: #ea580c; letter-spacing: 6px; margin: 5px 0 60px 0; font-weight: 700; text-transform: uppercase; }
+        .header-logo { height: 100px; margin-bottom: 20px; }
         
-        .sub-text { font-size: 14px; color: #64748b; font-weight: 700; letter-spacing: 2px; }
-        .student-name { font-size: 42px; font-weight: 700; color: #1e3a8a; margin: 20px 0; border-bottom: 2px solid #e2e8f0; width: 800px; padding-bottom: 10px; }
-        .course-text { font-size: 16px; color: #475569; line-height: 1.6; max-width: 700px; margin-top: 20px; }
-        .course-name { font-weight: 900; color: #1e3a8a; display: block; margin-top: 5px; font-size: 20px; }
+        .company-name { font-weight: 900; font-size: 28px; color: #1e3a8a; letter-spacing: 2px; margin-bottom: 10px; }
 
-        /* Bottom Section */
-        .footer { position: absolute; bottom: 40px; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        #cathsseta-logo { height: 60px; margin-top: 20px; }
+        .cert-title { font-family: 'Playfair Display', serif; font-size: 58px; font-weight: 700; color: #1e3a8a; margin: 10px 0; border-top: 2px solid #1e3a8a; border-bottom: 2px solid #1e3a8a; padding: 10px 40px; }
         
-        /* The Blue Star (Bottom Center) */
-        .star-seal { width: 100px; height: 100px; margin-bottom: 10px; }
+        .presented-to { font-size: 18px; color: #444; font-weight: 600; letter-spacing: 4px; margin-top: 40px; text-transform: uppercase; }
+        
+        .student-name { font-family: 'Playfair Display', serif; font-size: 48px; font-style: italic; font-weight: 700; color: #000; margin: 20px 0 10px 0; }
+        
+        .id-number { font-size: 20px; color: #1e3a8a; font-weight: 700; margin-bottom: 40px; }
 
-        /* Side Flaps */
-        .flap {
-            position: absolute; top: 50%; background: #1e3a8a; color: white;
-            padding: 8px 30px; font-size: 12px; font-weight: 700; letter-spacing: 2px;
-            text-transform: uppercase; white-space: nowrap; z-index: 10;
-        }
-        .left-flap { left: 0; transform: translate(-38%, -50%) rotate(-90deg); }
-        .right-flap { right: 0; transform: translate(38%, -50%) rotate(90deg); }
+        .performance-text { font-size: 18px; color: #444; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .module-name { font-weight: 900; color: #1e3a8a; font-size: 24px; margin-top: 10px; display: block; }
+
+        .footer { position: absolute; bottom: 60px; width: 100%; display: flex; justify-content: center; }
+        #cathsseta-logo { height: 70px; }
+
     </style>
 </head>
 <body>
@@ -90,41 +83,31 @@
             <label>Bulk CSV (Name, ID)</label>
             <input type="file" id="csvFile" accept=".csv">
         </div>
-        <button class="btn-preview" onclick="updatePreview()">Refresh Preview</button>
-        <button class="btn-bulk" onclick="generateBulk()">GENERATE 50+ CERTIFICATES (SINGLE PDF)</button>
+        <button class="btn-preview" onclick="updatePreview()">Update Preview</button>
+        <button class="btn-bulk" onclick="generateBulk()">GENERATE ALL FROM PDF DATA (SINGLE PDF)</button>
     </div>
 
     <div id="cert-wrapper">
         <div id="cert-container">
-            <div class="flap left-flap">Attended - November 2025</div>
-            <div class="flap right-flap">Issued - February 2026</div>
-
-            <div class="header">
-                <img id="main-logo" src="" alt="Logo">
-                <div class="company-info">
-                    <div class="company-name">MARIA MOTSHILI (PTY)LTD</div>
-                </div>
-            </div>
-
-            <div class="content">
-                <h1>CERTIFICATE</h1>
-                <h2>of achievement</h2>
+            <div class="inner-border">
+                <img id="main-logo" class="header-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23eee'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='10'%3EMaria Logo%3C/text%3E%3C/svg%3E" alt="Logo">
                 
-                <p class="sub-text">THIS CERTIFICATE IS PROUDLY PRESENTED TO</p>
+                <div class="company-name">MARIA MOTSHILI PTY LTD</div>
+                <div class="cert-title">CERTIFICATE OF ACHIEVEMENT</div>
+                
+                <div class="presented-to">PROUDLY PRESENTED TO</div>
+                
                 <div class="student-name" id="dispName">LEEPILE DISEKO</div>
-                <div class="sub-text" style="font-size: 18px;" id="dispID">ID 6504195821082</div>
+                <div class="id-number" id="dispID">ID 6504195821082</div>
 
-                <p class="course-text">
-                    for his excellent performance in
-                    <span class="course-name">CUSTOMER SERVICE MODULE</span>
-                </p>
-            </div>
+                <div class="performance-text">
+                    FOR HIS EXCELLENT PERFORMANCE IN
+                    <span class="module-name">CUSTOMER SERVICE MODULE</span>
+                </div>
 
-            <div class="footer">
-                <svg class="star-seal" viewBox="0 0 100 100">
-                    <polygon points="50,5 63,37 95,50 63,63 50,95 37,63 5,50 37,37" fill="#1e3a8a"/>
-                </svg>
-                <img id="cathsseta-logo" src="" alt="Seta Logo">
+                <div class="footer">
+                    <img id="cathsseta-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23eee'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='10'%3ECathsseta Logo%3C/text%3E%3C/svg%3E" alt="Seta Logo">
+                </div>
             </div>
         </div>
     </div>
@@ -153,16 +136,21 @@
                 const element = document.getElementById('cert-container');
 
                 for (let i = 0; i < lines.length; i++) {
-                    const [name, id] = lines[i].split(',');
-                    document.getElementById('dispName').innerText = name.trim().toUpperCase();
-                    document.getElementById('dispID').innerText = "ID " + id.trim();
+                    const row = lines[i].split(',');
+                    if(row.length < 2) continue;
                     
-                    await new Promise(r => setTimeout(r, 100)); // Ensure render
-                    const canvas = await html2canvas(element, { scale: 2 });
+                    const name = row[0].trim();
+                    const id = row[1].trim();
+                    
+                    document.getElementById('dispName').innerText = name.toUpperCase();
+                    document.getElementById('dispID').innerText = "ID " + id;
+                    
+                    await new Promise(r => setTimeout(r, 150)); // Allow time for font rendering
+                    const canvas = await html2canvas(element, { scale: 2, useCORS: true });
                     if (i > 0) pdf.addPage();
-                    pdf.addImage(canvas.toDataURL('image/jpeg', 0.8), 'JPEG', 0, 0, 1123, 794);
+                    pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 1123, 794);
                 }
-                pdf.save('All_Certificates.pdf');
+                pdf.save('Maria_Motshili_Certificates.pdf');
             };
             reader.readAsText(csv);
         }
