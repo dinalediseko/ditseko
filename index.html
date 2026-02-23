@@ -3,183 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Certificate Creator - Customer Service</title>
+    <title>Bulk Certificate Creator - Customer Service</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #f0f4f8; font-family: 'Montserrat', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
-        
-        /* Input Panel */
-        .controls { 
-            background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-            margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 20px; max-width: 900px; width: 100%; justify-content: center;
+        body { 
+            background: #f0f4f8; 
+            font-family: 'Montserrat', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px; 
+            margin: 0; 
         }
-        .input-group { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 180px; }
-        label { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
-        input { padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; }
+        
+        /* Control Panel */
+        .controls { 
+            background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            margin-bottom: 30px; display: flex; flex-direction: column; gap: 20px; max-width: 900px; width: 100%;
+        }
+        .control-section { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; padding-bottom: 20px; border-bottom: 1px solid #e2e8f0; }
+        .control-section:last-child { border-bottom: none; padding-bottom: 0; }
+        
+        .input-group { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 200px; }
+        label { font-size: 0.8rem; font-weight: 700; color: #475569; text-transform: uppercase; }
+        input { padding: 10px; border: 2px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
         
         button { 
-            background: #30398a; color: white; border: none; padding: 14px 30px; border-radius: 50px; 
-            cursor: pointer; font-weight: 700; transition: 0.3s; box-shadow: 0 4px 15px rgba(48, 57, 138, 0.3);
+            background: #2563eb; color: white; border: none; padding: 12px 24px; border-radius: 6px; 
+            cursor: pointer; font-weight: 700; transition: 0.2s; 
         }
-        button:hover { background: #232a68; transform: translateY(-2px); }
+        button:hover { background: #1d4ed8; }
+        .btn-bulk { background: #10b981; }
+        .btn-bulk:hover { background: #059669; }
 
-        /* Certificate Preview Area */
-        #cert-wrapper { background: #cbd5e1; padding: 40px; border-radius: 10px; overflow-x: auto; max-width: 100%; }
-        #cert-container { width: 800px; height: 565px; background: #30398a; position: relative; overflow: hidden; color: #1e293b; }
-
-        .cert-body {
-            position: absolute; left: 0; top: 0; width: 660px; height: 100%; background: white;
-            border-top-right-radius: 80px; border-bottom-right-radius: 80px; padding: 60px;
-            box-sizing: border-box; z-index: 2; box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+        /* Certificate Preview Area (A4 Landscape Proportions) */
+        #cert-wrapper { background: #e2e8f0; padding: 20px; border-radius: 10px; overflow-x: auto; max-width: 100%; box-shadow: inset 0 4px 10px rgba(0,0,0,0.05); }
+        #cert-container { 
+            width: 1123px; height: 794px; /* A4 Landscape at 96DPI */
+            background: white; position: relative; overflow: hidden; color: #000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; box-sizing: border-box;
         }
 
-        .pattern-right { position: absolute; right: 0; top: 0; width: 140px; height: 100%; z-index: 1; }
+        /* The Blue Star */
+        .star-logo { width: 150px; height: 150px; margin-bottom: 20px; }
 
-        /* Logo Styling */
-        #logo-preview { max-height: 80px; max-width: 150px; margin-bottom: 5px; object-fit: contain; display: block; }
+        /* Typography */
+        .company-name { font-size: 22px; font-weight: 600; margin-bottom: 30px; letter-spacing: 1px; }
+        .title { font-size: 36px; font-weight: 700; margin-bottom: 40px; letter-spacing: 2px; }
+        .presented-to { font-size: 18px; margin-bottom: 15px; }
+        .student-details { font-size: 24px; font-weight: 700; margin-bottom: 30px; text-decoration: underline; text-underline-offset: 8px;}
+        .performance { font-size: 18px; margin-bottom: 10px; }
+        .module { font-size: 22px; font-weight: 700; margin-bottom: 60px; }
+        .footer-logo { font-size: 20px; font-weight: 900; color: #333; letter-spacing: 2px; text-transform: lowercase; }
+
+        /* Side Flaps */
+        .flap {
+            position: absolute;
+            top: 50%;
+            background: #1e293b;
+            color: white;
+            padding: 10px 40px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .left-flap {
+            left: 0;
+            transform: translate(-42%, -50%) rotate(-90deg);
+        }
+        .right-flap {
+            right: 0;
+            transform: translate(42%, -50%) rotate(90deg);
+        }
+        
+        #status { font-weight: bold; color: #10b981; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div class="controls">
-        <div class="input-group">
-            <label>First Name</label>
-            <input type="text" id="firstName" value="William">
+        <div class="control-section">
+            <div class="input-group">
+                <label>Single Student Name</label>
+                <input type="text" id="singleName" value="LEEPILE DISEKO">
+            </div>
+            <div class="input-group">
+                <label>ID Number</label>
+                <input type="text" id="singleID" value="6504195821082">
+            </div>
+            <button onclick="updatePreview()">Preview</button>
+            <button onclick="downloadSinglePDF()">Download 1 PDF</button>
         </div>
-        <div class="input-group">
-            <label>Surname</label>
-            <input type="text" id="surname" value="Diseko">
+
+        <div class="control-section">
+            <div class="input-group">
+                <label>Bulk Upload (CSV file: Name, ID)</label>
+                <input type="file" id="csvInput" accept=".csv">
+            </div>
+            <button class="btn-bulk" onclick="processBulkCSV()">Generate Bulk Multi-page PDF</button>
         </div>
-        <div class="input-group">
-            <label>Identity Number</label>
-            <input type="text" id="idNumber" value="010615XXXXXXX">
-        </div>
-        <div class="input-group">
-            <label>Upload Logo (Screenshot)</label>
-            <input type="file" id="logoInput" accept="image/*">
-        </div>
-        <div style="display: flex; align-items: flex-end;">
-            <button onclick="downloadPDF()">Download PDF</button>
-        </div>
+        <div id="status"></div>
     </div>
 
     <div id="cert-wrapper">
         <div id="cert-container">
-            <div class="pattern-right">
-                <div style="position:absolute; top:40px; right:30px; width:50px; height:50px; background:#f4b324; border-radius:8px; transform: rotate(15deg);"></div>
-                <div style="position:absolute; top:110px; right:50px; width:30px; height:30px; background:#ea652b; border-radius:50%;"></div>
-                <div style="position:absolute; bottom:50px; right:20px; width:90px; height:90px; background:#54b7c8; border-radius:50%; opacity:0.7;"></div>
-                <div style="position:absolute; bottom:160px; right:40px; width:40px; height:40px; background:#f4b324; opacity:0.4; border-radius:50%;"></div>
-            </div>
+            <div class="flap left-flap">Attended - November 2025</div>
+            
+            <div class="flap right-flap">Issued - February 2026</div>
 
-            <div class="cert-body">
-                <div style="position: absolute; top: 30px; right: 40px; display: flex; flex-direction: column; align-items: flex-end;">
-                    <img id="logo-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='50'%3E%3Crect width='100' height='50' fill='%23eee'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='10' text-anchor='middle' dy='.3em' fill='%23aaa'%3EUpload Logo%3C/text%3E%3C/svg%3E" alt="Company Logo">
-                    <div style="font-weight: 900; color: #30398a; font-size: 11px; letter-spacing: 1px;">MARIA MOTSHILI (PTY)LTD</div>
-                    <div style="width: 100%; height: 3px; background: #ea652b; margin-top: 4px;"></div>
-                </div>
+            <svg class="star-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="50,0 60,40 100,50 60,60 50,100 40,60 0,50 40,40" fill="#4a7eb5" stroke="#2c4e70" stroke-width="1"/>
+            </svg>
 
-                <h1 style="font-size: 52px; margin: 0; color: #30398a; font-weight: 900; letter-spacing: -1px;">CERTIFICATE</h1>
-                <h2 style="font-size: 15px; letter-spacing: 5px; color: #ea652b; margin: 5px 0 0 0; text-transform: uppercase; font-weight: 700;">of achievement</h2>
-
-                <p style="margin-top: 50px; font-size: 11px; color: #94a3b8; font-weight: 800; letter-spacing: 2px;">THIS CERTIFICATE IS PROUDLY PRESENTED TO</p>
-                
-                <div id="display-full-name" style="font-size: 38px; font-weight: 700; color: #30398a; border-bottom: 2px solid #f1f5f9; margin: 10px 0 25px 0; padding-bottom: 15px; width: 95%;">
-                    William Diseko
-                </div>
-
-                <p style="font-size: 14px; line-height: 1.8; color: #475569; width: 90%; margin-bottom: 40px;">
-                    for their excellent performance in Customer Service.
-                </p>
-
-                <div style="margin-top: 40px; display: flex; gap: 60px;">
-                    <div style="text-align: left;">
-                        <div id="display-id" style="font-size: 16px; font-weight: 700; color: #1e293b; letter-spacing: 0.5px; min-height: 20px;">010615XXXXXXX</div>
-                        <div style="border-top: 2px solid #30398a; width: 180px; margin-top: 8px; padding-top: 6px; font-size: 10px; font-weight: 800; color: #64748b; letter-spacing: 1px;">IDENTITY NUMBER</div>
-                    </div>
-                    <div style="text-align: left;">
-                        <div id="display-date" style="font-size: 16px; font-weight: 700; color: #1e293b; min-height: 20px;">February 20, 2026</div>
-                        <div style="border-top: 2px solid #30398a; width: 180px; margin-top: 8px; padding-top: 6px; font-size: 10px; font-weight: 800; color: #64748b; letter-spacing: 1px;">DATE ISSUED</div>
-                    </div>
-                </div>
-            </div>
+            <div class="company-name">MARIA MOTSHILI PTY LTD</div>
+            <div class="title">CERTIFICATE OF ACHIEVEMENT</div>
+            <div class="presented-to">PROUDLY PRESENTED TO</div>
+            
+            <div class="student-details" id="cert-student">LEEPILE DISEKO, ID 6504195821082</div>
+            
+            <div class="performance">FOR THEIR EXCELLENT PERFORMANCE IN</div>
+            <div class="module">CUSTOMER SERVICE MODULE</div>
+            
+            <div class="footer-logo">cathsseta</div>
         </div>
     </div>
 
     <script>
-        const fNameInput = document.getElementById('firstName');
-        const sNameInput = document.getElementById('surname');
-        const idInput = document.getElementById('idNumber');
-        const logoInput = document.getElementById('logoInput');
-        
-        const displayFullName = document.getElementById('display-full-name');
-        const displayID = document.getElementById('display-id');
-        const displayDate = document.getElementById('display-date');
-        const logoPreview = document.getElementById('logo-preview');
+        const singleNameInput = document.getElementById('singleName');
+        const singleIDInput = document.getElementById('singleID');
+        const certStudent = document.getElementById('cert-student');
+        const statusDiv = document.getElementById('status');
 
-        // Automatic current date
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        displayDate.innerText = new Date().toLocaleDateString('en-US', options);
-
-        // Logo Upload Handler
-        logoInput.addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => logoPreview.src = e.target.result;
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Live Preview Logic
-        const updatePreview = () => {
-            displayFullName.innerText = `${fNameInput.value} ${sNameInput.value}`;
-            displayID.innerText = idInput.value;
-        };
-
-        [fNameInput, sNameInput, idInput].forEach(input => {
-            input.addEventListener('input', updatePreview);
-        });
-
-        // PDF Generation
-        async function downloadPDF() {
-            const { jsPDF } = window.jspdf;
-            const element = document.getElementById('cert-container');
-            const btn = document.querySelector('button');
-            
-            btn.innerText = "Processing...";
-            btn.disabled = true;
-
-            try {
-                const canvas = await html2canvas(element, {
-                    scale: 4, // Higher scale for crisp text and graphics
-                    useCORS: true,
-                    backgroundColor: null
-                });
-
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF({
-                    orientation: 'landscape',
-                    unit: 'px',
-                    format: [800, 565]
-                });
-
-                pdf.addImage(imgData, 'PNG', 0, 0, 800, 565);
-                
-                // Final Filename: NameSurname.pdf
-                const fileName = `${fNameInput.value.trim()}${sNameInput.value.trim()}.pdf`.replace(/\s+/g, '');
-                pdf.save(fileName);
-
-            } catch (error) {
-                console.error("Error:", error);
-                alert("Generation failed.");
-            } finally {
-                btn.innerText = "Download PDF";
-                btn.disabled = false;
-            }
+        // Update Live Preview
+        function updatePreview() {
+            certStudent.innerText = `${singleNameInput.value.toUpperCase()}, ID ${singleIDInput.value}`;
         }
-    </script>
-</body>
-</html>
+
+        // Generate Single PDF
+        async function downloadSinglePDF() {
+            updatePreview();
+            await createPDF(`${singleNameInput.value.replace(/\s+/g, '_')}_Certificate.pdf`, false);
+        }
+
+        // Generate Bulk PDF from CSV
+        async function processBulkCSV() {
+            const fileInput = document.getElementById('csvInput');
+            if (!fileInput.files.length) {
+                alert("Please select a CSV file first!");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function(e) {
+                const text = e.target.result;
+                // Split by line, remove empty lines
+                const rows = text.split('\n').map(row => row.trim()).filter(row => row.length > 0);
+                
+                if (rows.length === 0) {
+                    alert("The CSV file is empty.");
+                    return;
+                }
+
+                statusDiv.innerText = `Processing ${rows.length} certificates. Please wait, this may take a moment...`;
+                
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [1123, 794] });
+                const element = document.getElementById('cert-container');
+
+                for (let i = 0; i < rows.length; i++) {
+                    // Assuming format: Name, ID
+                    const columns = rows[i].split(',');
+                    if(columns.length >= 2) {
+                        const name = columns[0].trim().toUpperCase();
+                        const id = columns[1].trim();
+                        
+                        // Update DOM
+                        certStudent.innerText = `${name}, ID ${id}`;
+                        
+                        // Wait for DOM to render
+                        await new Promise(resolve => setTimeout(resolve, 50)); 
+                        
+                        // Capture canvas
+                        const
