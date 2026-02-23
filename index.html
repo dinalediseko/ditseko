@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maria Motshili Certificate Generator</title>
+    <title>Maria Motshili Professional Certificate Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
@@ -31,31 +31,41 @@
         #cert-container { 
             width: 1123px; height: 794px; background: white; position: relative; 
             display: flex; flex-direction: column; align-items: center; box-sizing: border-box;
-            border: 20px solid #1e3a8a; padding: 40px; overflow: hidden;
+            border: 20px solid #1e3a8a; overflow: hidden;
         }
         
         /* Inner Border */
         .inner-border {
-            border: 2px solid #1e3a8a; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; padding: 40px; box-sizing: border-box;
+            border: 2px solid #1e3a8a; width: 100%; height: 100%; display: flex; flex-direction: column; 
+            align-items: center; padding: 40px; box-sizing: border-box; position: relative;
         }
 
-        .header-logo { height: 100px; margin-bottom: 20px; }
-        
-        .company-name { font-weight: 900; font-size: 28px; color: #1e3a8a; letter-spacing: 2px; margin-bottom: 10px; }
+        /* Side Flaps */
+        .flap {
+            position: absolute; top: 50%; background: #1e3a8a; color: white;
+            padding: 8px 35px; font-size: 12px; font-weight: 700; letter-spacing: 2px;
+            text-transform: uppercase; white-space: nowrap; z-index: 20;
+        }
+        .left-flap { left: 0; transform: translate(-35%, -50%) rotate(-90deg); }
+        .right-flap { right: 0; transform: translate(35%, -50%) rotate(90deg); }
 
+        .header-logo { height: 90px; margin-bottom: 15px; }
+        .company-name { font-weight: 900; font-size: 28px; color: #1e3a8a; letter-spacing: 2px; margin-bottom: 10px; }
         .cert-title { font-family: 'Playfair Display', serif; font-size: 58px; font-weight: 700; color: #1e3a8a; margin: 10px 0; border-top: 2px solid #1e3a8a; border-bottom: 2px solid #1e3a8a; padding: 10px 40px; }
         
         .presented-to { font-size: 18px; color: #444; font-weight: 600; letter-spacing: 4px; margin-top: 40px; text-transform: uppercase; }
-        
         .student-name { font-family: 'Playfair Display', serif; font-size: 48px; font-style: italic; font-weight: 700; color: #000; margin: 20px 0 10px 0; }
-        
         .id-number { font-size: 20px; color: #1e3a8a; font-weight: 700; margin-bottom: 40px; }
 
-        .performance-text { font-size: 18px; color: #444; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-        
+        .performance-text { font-size: 18px; color: #444; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
         .module-name { font-weight: 900; color: #1e3a8a; font-size: 24px; margin-top: 10px; display: block; }
 
-        .footer { position: absolute; bottom: 60px; width: 100%; display: flex; justify-content: center; }
+        /* Footer with Two Stars */
+        .footer { 
+            position: absolute; bottom: 40px; width: 100%; 
+            display: flex; justify-content: center; align-items: center; gap: 40px; 
+        }
+        .star-seal { width: 60px; height: 60px; }
         #cathsseta-logo { height: 70px; }
 
     </style>
@@ -64,12 +74,12 @@
 
     <div class="controls">
         <div class="input-group">
-            <label>Upload Maria Motshili Logo</label>
-            <input type="file" id="logoMain" accept="image/*" onchange="loadImg(event, 'main-logo')">
+            <label>Upload Main Logo</label>
+            <input type="file" accept="image/*" onchange="loadImg(event, 'main-logo')">
         </div>
         <div class="input-group">
             <label>Upload Cathsseta Logo</label>
-            <input type="file" id="logoSeta" accept="image/*" onchange="loadImg(event, 'cathsseta-logo')">
+            <input type="file" accept="image/*" onchange="loadImg(event, 'cathsseta-logo')">
         </div>
         <div class="input-group">
             <label>Student Name</label>
@@ -83,14 +93,17 @@
             <label>Bulk CSV (Name, ID)</label>
             <input type="file" id="csvFile" accept=".csv">
         </div>
-        <button class="btn-preview" onclick="updatePreview()">Update Preview</button>
-        <button class="btn-bulk" onclick="generateBulk()">GENERATE ALL FROM PDF DATA (SINGLE PDF)</button>
+        <button class="btn-preview" onclick="updatePreview()">Refresh Preview</button>
+        <button class="btn-bulk" onclick="generateBulk()">GENERATE ALL CERTIFICATES (SINGLE PDF)</button>
     </div>
 
     <div id="cert-wrapper">
         <div id="cert-container">
+            <div class="flap left-flap">Attended - November 2025</div>
+            <div class="flap right-flap">Issued - February 2026</div>
+
             <div class="inner-border">
-                <img id="main-logo" class="header-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23eee'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='10'%3EMaria Logo%3C/text%3E%3C/svg%3E" alt="Logo">
+                <img id="main-logo" class="header-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23eee'/%3E%3C/svg%3E" alt="Logo">
                 
                 <div class="company-name">MARIA MOTSHILI PTY LTD</div>
                 <div class="cert-title">CERTIFICATE OF ACHIEVEMENT</div>
@@ -106,7 +119,15 @@
                 </div>
 
                 <div class="footer">
-                    <img id="cathsseta-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23eee'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='10'%3ECathsseta Logo%3C/text%3E%3C/svg%3E" alt="Seta Logo">
+                    <svg class="star-seal" viewBox="0 0 100 100">
+                        <polygon points="50,5 63,37 95,50 63,63 50,95 37,63 5,50 37,37" fill="#1e3a8a"/>
+                    </svg>
+
+                    <img id="cathsseta-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23eee'/%3E%3C/svg%3E" alt="Seta Logo">
+
+                    <svg class="star-seal" viewBox="0 0 100 100">
+                        <polygon points="50,5 63,37 95,50 63,63 50,95 37,63 5,50 37,37" fill="#1e3a8a"/>
+                    </svg>
                 </div>
             </div>
         </div>
@@ -145,10 +166,10 @@
                     document.getElementById('dispName').innerText = name.toUpperCase();
                     document.getElementById('dispID').innerText = "ID " + id;
                     
-                    await new Promise(r => setTimeout(r, 150)); // Allow time for font rendering
+                    await new Promise(r => setTimeout(r, 150)); 
                     const canvas = await html2canvas(element, { scale: 2, useCORS: true });
                     if (i > 0) pdf.addPage();
-                    pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 1123, 794);
+                    pdf.addImage(canvas.toDataURL('image/jpeg', 0.9), 'JPEG', 0, 0, 1123, 794);
                 }
                 pdf.save('Maria_Motshili_Certificates.pdf');
             };
